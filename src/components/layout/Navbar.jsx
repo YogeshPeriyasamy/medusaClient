@@ -1,15 +1,14 @@
-import { Link } from "react-router-dom";
-import { useCart } from "../../cart/cart-context";
+import { Link } from 'react-router-dom';
+import { useCart } from '../../cart/cart-context';
 
 export default function Navbar() {
   const { cart } = useCart();
 
-  const count =
-    cart?.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
+  const count = cart?.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
 
   return (
     <header className="flex justify-between items-center p-4 border-b">
-      <Link to="/" className="text-xl font-semibold">
+      <Link to="/" className="text-xl font-bold text-green-500">
         TOYAMA
       </Link>
 
