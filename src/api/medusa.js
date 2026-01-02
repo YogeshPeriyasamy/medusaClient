@@ -1,6 +1,7 @@
 const BASE = 'http://localhost:9000/store';
 const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY;
 const SALES_CHANNEL_ID = import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID;
+const REGION_ID = import.meta.env.VITE_MEDUSA_REGION_ID;
 
 async function medusaFetch(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
@@ -31,23 +32,27 @@ export async function getProducts() {
 }
 
 export async function getProductsByCategory(handle) {
-
   const catRes = await medusaFetch(`/product-categories?handle=${handle}`);
-
+  console.log('category response', catRes);
   const category = catRes.product_categories?.[0];
   if (!category) return [];
 
-  //  Fetch products
   const data = await medusaFetch(
-    `/products?category_id[]=${category.id}&sales_channel_id=${SALES_CHANNEL_ID}`
+    `/products?category_id[]=${category.id}` +
+      `&sales_channel_id=${SALES_CHANNEL_ID}` +
+      `&region_id=${REGION_ID}`
   );
-  console.log('category products', data.products);
+  console.log('products by category', data.products);
   return data.products;
 }
 
-//get product details 
-export async function getProduct(handle) {
-  const data = await medusaFetch(`/products/${handle}`);
+//get product details
+export async function getProduct(id) {
+  const data = await medusaFetch(
+    `/products/${id}?sales_channel_id=${
+      import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID
+    }&region_id=${REGION_ID}`
+  );
   return data.product;
 }
 
@@ -56,7 +61,7 @@ export async function createCart() {
   const data = await medusaFetch('/carts', {
     method: 'POST',
     body: JSON.stringify({
-      region_id: import.meta.env.VITE_MEDUSA_REGION_ID,
+      region_id: REGION_ID,
     }),
   });
   return data.cart;
@@ -93,4 +98,40 @@ export async function removeLineItem(cartId, lineId) {
     method: 'DELETE',
   });
   return data.cart;
+}
+
+export async function setCartEmail(cartId, email) {
+  const data = await medusaFetch(`/carts/${cartId}`, {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  })
+  return data.cart
+}
+
+export async function setShippingAddress(cartId, address) {
+  const data = await medusaFetch(`/carts/${cartId}`, {
+    method: "POST",
+    body: JSON.stringify({
+      shipping_address: address,
+      billing_address: address, 
+    }),
+  })
+  return data.cart
+}
+
+export async function addShippingMethod(cartId, optionId) {
+  const data = await medusaFetch(`/carts/${cartId}/shipping-methods`, {
+    method: "POST",
+    body: JSON.stringify({
+      option_id: optionId,
+    }),
+  })
+  return data.cart
+}
+
+export async function completeOrder(cartId) {
+  const data = await medusaFetch(`/carts/${cartId}/complete`, {
+    method: 'POST',
+  });
+  return data.order;
 }
