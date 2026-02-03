@@ -52,20 +52,20 @@ export async function getProducts() {
   return productsWithHighlights;
 }
 
-export async function getProductsByCategory(handle) {
-  const catRes = await medusaFetch(`/product-categories?handle=${handle}`);
-  console.log('category response', catRes);
-  const category = catRes.product_categories?.[0];
-  if (!category) return [];
+// export async function getProductsByCategory(handle) {
+//   const catRes = await medusaFetch(`/product-categories?handle=${handle}`);
+//   console.log('category response', catRes);
+//   const category = catRes.product_categories?.[0];
+//   if (!category) return [];
 
-  const data = await medusaFetch(
-    `/products?category_id[]=${category.id}` +
-    `&sales_channel_id=${SALES_CHANNEL_ID}` +
-    `&region_id=${REGION_ID}`
-  );
+//   const data = await medusaFetch(
+//     `/products?category_id[]=${category.id}` +
+//     `&sales_channel_id=${SALES_CHANNEL_ID}` +
+//     `&region_id=${REGION_ID}`
+//   );
 
-  return data.products;
-}
+//   return data.products;
+// }
 
 //get product details
 export async function getProduct(id) {
@@ -89,20 +89,29 @@ export async function createCart() {
 
 //fetch the cart by id
 export async function getCart(cartId) {
+  console.log('cart id', cartId);
   const data = await medusaFetch(`/carts/${cartId}`);
+  console.log('cart data', data);
   return data.cart;
 }
 
 //add item to a cart
 export async function addToCart(cartId, variantId, quantity) {
-  const data = await medusaFetch(`/carts/${cartId}/line-items`, {
-    method: 'POST',
-    body: JSON.stringify({
-      variant_id: variantId,
-      quantity,
-    }),
-  });
-  return data.cart;
+  try {
+    const data = await medusaFetch(`/carts/${cartId}/line-items`, {
+      method: 'POST',
+      body: JSON.stringify({
+        variant_id: variantId,
+        quantity,
+      }),
+    });
+    console.log('cart data added', data);
+    return data.cart;
+  } catch (err) {
+    console.log("adding to cart failed", err);
+    return null;
+  }
+
 }
 
 export async function updateLineItem(cartId, lineId, quantity) {

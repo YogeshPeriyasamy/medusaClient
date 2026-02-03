@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
 
     return (
         <Link to={`/product/${product.id}`} state={{ product }}>
-            <article className='flex flex-col bg-white rounded-lg  hover:shadow-md transition-shadow p-5 '>
+            <article className='flex flex-col bg-white rounded-lg  hover:shadow-md transition-shadow p-5 active:border-2 active:border-[#5BEF20]'>
 
                 <div className='bg-gray-50 rounded-lg overflow-hidden mb-4 aspect-square'>
                     <img
