@@ -13,8 +13,8 @@ export default function Cart() {
   );
 
   return (
-    <div className="p-12">
-      <h1 className="text-3xl mb-8">Cart</h1>
+    <div className="px-[100px] py-[50px] bg-[#F8F7F7] min-h-screen">
+      <h1 className="text-3xl mb-8 font-bold">Cart</h1>
 
       {cart.items.length === 0 ? (
         <p>Your cart is empty.</p>
@@ -25,12 +25,14 @@ export default function Cart() {
               <div>
                 <div>{item.title}</div>
                 <div className="opacity-70">
-                  ₹ {(item.unit_price / 100).toLocaleString('en-IN')}
+                  {/* ₹ {(item.unit_price / 100).toLocaleString('en-IN')} */}
+                  ₹ {item.unit_price.toLocaleString('en-IN')}
                 </div>
               </div>
 
               <input
                 type="number"
+                className='border px-3 rounded-md'
                 min={1}
                 value={item.quantity}
                 onChange={(e) =>
@@ -52,11 +54,15 @@ export default function Cart() {
 
           <div className="flex justify-between text-xl">
             <span>Total</span>
-            <span>₹ {(subtotal / 100).toLocaleString('en-IN')}</span>
+            <span>₹ {subtotal.toLocaleString('en-IN')}</span>
+            {/* <span>₹ {(subtotal / 100).toLocaleString('en-IN')}</span> */}
           </div>
 
           <div className="mt-8">
-            <Link to="/checkout" className="px-6 py-3 border inline-block">
+            <Link
+              to="/checkout"
+              className="px-8 py-4 bg-[#226A73] text-white font-semibold rounded-lg hover:bg-[#1a5359] transition-colors inline-block"
+            >
               Proceed to Checkout
             </Link>
           </div>

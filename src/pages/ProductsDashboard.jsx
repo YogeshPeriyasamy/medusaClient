@@ -83,6 +83,7 @@ export default function ProductsDashboard() {
     );
   }
 
+
   return (
     <div className='w-full min-h-screen bg-[#F8F7F7]'>
       <VisualTile />

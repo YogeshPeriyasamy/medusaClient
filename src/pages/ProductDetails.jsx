@@ -18,6 +18,7 @@ export default function ProductDetails() {
 
   const location = useLocation();
   const { product } = location.state || {};
+  console.log("product", product);
 
   if (!product) return <div className="min-h-screen flex items-center justify-center text-gray-600">Loading product…</div>;
   if (!cart) return <div className="min-h-screen flex items-center justify-center text-gray-600">Initializing cart…</div>;

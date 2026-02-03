@@ -27,7 +27,7 @@ export async function getCategories() {
 }
 
 export async function getProducts() {
-  const data = await medusaFetch('/products?fields=*categories,*variants,*variants.images');
+  const data = await medusaFetch(`/products?fields=*categories,*variants,*variants.images,*variants.calculated_price&region_id=${REGION_ID}`);
   const products = data.products;
 
   // Fetch highlights for all products in parallel
@@ -70,7 +70,7 @@ export async function getProducts() {
 //get product details
 export async function getProduct(id) {
   const data = await medusaFetch(
-    `/products/${id}?fields=*variants,*variants.images&sales_channel_id=${import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID
+    `/products/${id}?fields=*variants,*variants.images,*variants.calculated_price&sales_channel_id=${import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID
     }&region_id=${REGION_ID}`
   );
   return data.product;
@@ -108,8 +108,9 @@ export async function addToCart(cartId, variantId, quantity) {
     console.log('cart data added', data);
     return data.cart;
   } catch (err) {
-    console.log("adding to cart failed", err);
-    return null;
+    console.log("Status:", err.status);
+    console.log("Response:", err.response);
+    console.log("Full error:", JSON.stringify(err, null, 2));
   }
 
 }

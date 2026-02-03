@@ -27,6 +27,8 @@ export function CartProvider({ children }) {
     }
   }, [])
 
+  console.log("cart", cart);
+
   return (
     <CartContext.Provider value={{ cart, setCart }}>
       {children}

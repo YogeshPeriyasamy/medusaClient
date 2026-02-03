@@ -1,4 +1,5 @@
 export function getVariantPrice(variant) {
+  console.log("variant", variant);
   if (!variant) return null;
 
   const price = variant.calculated_price;
@@ -8,5 +9,6 @@ export function getVariantPrice(variant) {
   }
 
   // Medusa stores prices in smallest currency unit
-  return price.calculated_amount / 100;
+  // return price.calculated_amount / 100;
+  return price.calculated_amount;
 }
