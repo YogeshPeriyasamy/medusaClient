@@ -27,8 +27,29 @@ export async function getCategories() {
 }
 
 export async function getProducts() {
-  const data = await medusaFetch('/products');
-  return data.products;
+  const data = await medusaFetch('/products?fields=*categories,*variants,*variants.images');
+  const products = data.products;
+
+  // Fetch highlights for all products in parallel
+  const productsWithHighlights = await Promise.all(
+    products.map(async (product) => {
+      try {
+        const highlightsData = await medusaFetch(`/products/${product.id}/highlights`);
+        return {
+          ...product,
+          highlights: highlightsData.highlights || []
+        };
+      } catch (error) {
+        // If highlights fetch fails, return product without highlights
+        return {
+          ...product,
+          highlights: []
+        };
+      }
+    })
+  );
+
+  return productsWithHighlights;
 }
 
 export async function getProductsByCategory(handle) {
@@ -39,18 +60,17 @@ export async function getProductsByCategory(handle) {
 
   const data = await medusaFetch(
     `/products?category_id[]=${category.id}` +
-      `&sales_channel_id=${SALES_CHANNEL_ID}` +
-      `&region_id=${REGION_ID}`
+    `&sales_channel_id=${SALES_CHANNEL_ID}` +
+    `&region_id=${REGION_ID}`
   );
-  console.log('products by category', data.products);
+
   return data.products;
 }
 
 //get product details
 export async function getProduct(id) {
   const data = await medusaFetch(
-    `/products/${id}?sales_channel_id=${
-      import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID
+    `/products/${id}?fields=*variants,*variants.images&sales_channel_id=${import.meta.env.VITE_MEDUSA_SALES_CHANNEL_ID
     }&region_id=${REGION_ID}`
   );
   return data.product;
@@ -113,7 +133,7 @@ export async function setShippingAddress(cartId, address) {
     method: "POST",
     body: JSON.stringify({
       shipping_address: address,
-      billing_address: address, 
+      billing_address: address,
     }),
   })
   return data.cart

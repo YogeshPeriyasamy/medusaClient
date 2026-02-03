@@ -11,9 +11,9 @@ export default function Navbar() {
 
   return (
     <div className="flex justify-center h-[60px] shadow-sm sticky top-0 z-50 bg-white">
-      <header className="flex justify-between items-center p-4   max-w-[1280px] w-full ">
+      <header className="flex flex-row items-center justify-between p-6 w-full ">
         <Link to="/">
-          <img src={ToyamaLogo} alt="Toyama" className="h-[24px]" />
+          <img src={ToyamaLogo} alt="Toyama" className="h-[24px] " />
         </Link>
 
         <Link to="/cart" className="relative">
